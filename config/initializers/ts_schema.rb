@@ -50,6 +50,7 @@ TsSchema.setup do |config|
   # Whether to generate types for associated models
   #
   # config.include_associated = true
+  config.include_associated = false
 
   # Parent classes of models to generate (as strings or symbols)
   # Only classes inheriting from those in this list will have types generated
@@ -77,6 +78,12 @@ TsSchema.setup do |config|
   #   encrypted_password: :password,
   #   password: :optional,
   # }
+  config.field_overrides = {
+    encrypted_password: :omit,
+    reset_password_token: :omit,
+    reset_password_sent_at: :omit,
+    remember_created_at: :omit
+  }
 
   # Override types for fields by field name. This is globally applied.
   # Useful for polymorphic associations which would otherwise be of type string, e.g.:

@@ -21,20 +21,20 @@ Rails API backend for an Amazon-like marketplace. The API currently exposes user
 Use the project Ruby version:
 
 ```bash
-mise exec ruby@3.3.9 -- bundle install
-mise exec ruby@3.3.9 -- bin/rails db:create db:migrate db:seed
+bundle install
+bin/rails db:create db:migrate db:seed
 ```
 
 Run the API:
 
 ```bash
-mise exec ruby@3.3.9 -- bin/rails server -p 3002
+bin/rails server -p 3002
 ```
 
 ## Tests
 
 ```bash
-mise exec ruby@3.3.9 -- bundle exec rspec
+bundle exec rspec
 ```
 
 Current product specs cover:
