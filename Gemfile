@@ -44,6 +44,8 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "rspec-rails", require: false
 end
 
 gem "ts_schema", "~> 1.0"

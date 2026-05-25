@@ -10,5 +10,6 @@ Rails.application.routes.draw do
   # root "posts#index"
   namespace "v1", defaults: {format: 'json'} do
     resources :users
+    resources :products, only: %i[index show]
   end
 end

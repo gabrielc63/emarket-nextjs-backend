@@ -1,0 +1,80 @@
+require "rails_helper"
+
+RSpec.describe "V1::Products", type: :request do
+  describe "GET /v1/products" do
+    it "returns active products only" do
+      active_product = Product.create!(
+        name: "Wireless Headphones",
+        slug: "wireless-headphones",
+        sku: "AUDIO-001",
+        description: "Noise-canceling wireless headphones.",
+        price_cents: 12999,
+        currency: "USD",
+        stock_quantity: 20,
+        status: "active"
+      )
+
+      draft_product = Product.create!(
+        name: "Draft Laptop",
+        slug: "draft-laptop",
+        sku: "TECH-001",
+        description: "Draft product that should not appear publicly.",
+        price_cents: 89999,
+        currency: "USD",
+        stock_quantity: 5,
+        status: "draft"
+      )
+
+      get v1_products_path(format: :json)
+
+      expect(response).to have_http_status(:ok)
+
+      body = JSON.parse(response.body)
+      names = body.map { |product| product.fetch("name") }
+
+      expect(names).to include(active_product.name)
+      expect(names).not_to include(draft_product.name)
+    end
+  end
+
+  describe "GET /v1/products/:id" do
+    it "returns an active product" do
+      product = Product.create!(
+        name: "Wireless Headphones",
+        slug: "wireless-headphones",
+        sku: "AUDIO-001",
+        description: "Noise-canceling wireless headphones.",
+        price_cents: 12999,
+        currency: "USD",
+        stock_quantity: 20,
+        status: "active"
+      )
+
+      get v1_product_path(product, format: :json)
+
+      expect(response).to have_http_status(:ok)
+
+      body = JSON.parse(response.body)
+      expect(body.fetch("id")).to eq(product.id)
+      expect(body.fetch("name")).to eq(product.name)
+      expect(body.fetch("price_cents")).to eq(product.price_cents)
+    end
+
+    it "does not return draft products" do
+      product = Product.create!(
+        name: "Draft Laptop",
+        slug: "draft-laptop",
+        sku: "TECH-001",
+        description: "Draft product that should not appear publicly.",
+        price_cents: 89999,
+        currency: "USD",
+        stock_quantity: 5,
+        status: "draft"
+      )
+
+      get v1_product_path(product, format: :json)
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+end
