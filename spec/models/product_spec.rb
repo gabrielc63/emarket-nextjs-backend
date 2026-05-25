@@ -2,14 +2,15 @@ require "rails_helper"
 
 RSpec.describe Product, type: :model do
   it "is valid with valid attributes" do
-    product = described_class.new(
+    product = build(
+      :product,
       name: "Desk Lamp",
       sku: "HOME-001",
+      slug: nil,
       description: "Adjustable LED desk lamp.",
       price_cents: 4999,
       currency: "usd",
-      stock_quantity: 12,
-      status: "active"
+      stock_quantity: 12
     )
 
     expect(product).to be_valid
@@ -18,12 +19,10 @@ RSpec.describe Product, type: :model do
   end
 
   it "requires non-negative price and stock" do
-    product = described_class.new(
-      name: "Wireless Headphones",
-      slug: "wireless-headphones",
+    product = build(
+      :product,
       price_cents: -1,
-      stock_quantity: -1,
-      status: "active"
+      stock_quantity: -1
     )
 
     expect(product).not_to be_valid
@@ -32,11 +31,8 @@ RSpec.describe Product, type: :model do
   end
 
   it "requires a supported status" do
-    product = described_class.new(
-      name: "Wireless Headphones",
-      slug: "wireless-headphones",
-      price_cents: 12999,
-      stock_quantity: 20,
+    product = build(
+      :product,
       status: "deleted"
     )
 

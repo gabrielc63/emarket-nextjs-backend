@@ -3,26 +3,17 @@ require "rails_helper"
 RSpec.describe "V1::Products", type: :request do
   describe "GET /v1/products" do
     it "returns active products only" do
-      active_product = Product.create!(
+      active_product = create(
+        :product,
         name: "Wireless Headphones",
-        slug: "wireless-headphones",
-        sku: "AUDIO-001",
-        description: "Noise-canceling wireless headphones.",
-        price_cents: 12999,
-        currency: "USD",
-        stock_quantity: 20,
-        status: "active"
+        slug: "wireless-headphones"
       )
 
-      draft_product = Product.create!(
+      draft_product = create(
+        :product,
+        :draft,
         name: "Draft Laptop",
-        slug: "draft-laptop",
-        sku: "TECH-001",
-        description: "Draft product that should not appear publicly.",
-        price_cents: 89999,
-        currency: "USD",
-        stock_quantity: 5,
-        status: "draft"
+        slug: "draft-laptop"
       )
 
       get v1_products_path(format: :json)
@@ -39,15 +30,11 @@ RSpec.describe "V1::Products", type: :request do
 
   describe "GET /v1/products/:id" do
     it "returns an active product" do
-      product = Product.create!(
+      product = create(
+        :product,
         name: "Wireless Headphones",
         slug: "wireless-headphones",
-        sku: "AUDIO-001",
-        description: "Noise-canceling wireless headphones.",
-        price_cents: 12999,
-        currency: "USD",
-        stock_quantity: 20,
-        status: "active"
+        price_cents: 12999
       )
 
       get v1_product_path(product, format: :json)
@@ -61,15 +48,11 @@ RSpec.describe "V1::Products", type: :request do
     end
 
     it "does not return draft products" do
-      product = Product.create!(
+      product = create(
+        :product,
+        :draft,
         name: "Draft Laptop",
-        slug: "draft-laptop",
-        sku: "TECH-001",
-        description: "Draft product that should not appear publicly.",
-        price_cents: 89999,
-        currency: "USD",
-        stock_quantity: 5,
-        status: "draft"
+        slug: "draft-laptop"
       )
 
       get v1_product_path(product, format: :json)
