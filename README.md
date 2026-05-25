@@ -1,24 +1,53 @@
-# README
+# Emarket Rails API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Rails API backend for an Amazon-like marketplace. The API currently exposes users and public read-only products under the `/v1` namespace.
 
-Things you may want to cover:
+## Features
 
-* Ruby version
+- Rails 8 API-only application
+- PostgreSQL database
+- Versioned JSON API under `/v1`
+- Product model with status, stock, price, SKU, slug, and validations
+- Public product endpoints:
+  - `GET /v1/products`
+  - `GET /v1/products/:id`
+- Jbuilder JSON views
+- RSpec model and request specs
+- Seed data for demo marketplace products
+- TypeScript schema generation for the Next.js frontend
 
-* System dependencies
+## Setup
 
-* Configuration
+Use the project Ruby version:
 
-* Database creation
+```bash
+mise exec ruby@3.3.9 -- bundle install
+mise exec ruby@3.3.9 -- bin/rails db:create db:migrate db:seed
+```
 
-* Database initialization
+Run the API:
 
-* How to run the test suite
+```bash
+mise exec ruby@3.3.9 -- bin/rails server -p 3002
+```
 
-* Services (job queues, cache servers, search engines, etc.)
+## Tests
 
-* Deployment instructions
+```bash
+mise exec ruby@3.3.9 -- bundle exec rspec
+```
 
-* ...
+Current product specs cover:
+
+- Product validations
+- Public product listing
+- Active-only product visibility
+- Draft product hiding
+
+## API Notes
+
+Product responses are public for browsing. Product create, update, and delete should be added after Devise JWT authentication is implemented so seller actions are protected.
+
+## Screenshots
+
+Planned: add screenshots showing the Next.js homepage and product listing consuming this API.
