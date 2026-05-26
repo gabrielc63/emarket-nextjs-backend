@@ -22,6 +22,23 @@ RSpec.describe "V1::Authentication", type: :request do
     expect(body.fetch("role")).to eq("customer")
   end
 
+  it "does not allow role assignment during registration" do
+    post "/v1/users",
+      params: {
+        user: {
+          name: "Buyer One",
+          email: "buyer@example.com",
+          password: "password123",
+          password_confirmation: "password123",
+          role: "admin"
+        }
+      },
+      as: :json
+
+    expect(response).to have_http_status(:created)
+    expect(JSON.parse(response.body).fetch("role")).to eq("customer")
+  end
+
   it "logs in, reads current user, and logs out" do
     user = create(:user, email: "buyer@example.com", password: "password123")
 
