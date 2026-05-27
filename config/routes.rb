@@ -21,5 +21,8 @@ Rails.application.routes.draw do
     patch "current_user", to: "current_users#update"
     post "refresh", to: "refresh_tokens#create"
     resources :products, only: %i[index show]
+    resources :wishlists, only: %i[index show create update destroy] do
+      resources :wishlist_items, only: %i[create destroy]
+    end
   end
 end

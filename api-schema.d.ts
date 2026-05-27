@@ -13,16 +13,6 @@ declare namespace APISchema {
 		updatedAt: string;
 	}
 
-	type RefreshToken = {
-		id: number;
-		userId: number;
-		tokenDigest: string;
-		expiresAt: string;
-		revokedAt?: string;
-		createdAt: string;
-		updatedAt: string;
-	}
-
 	type User = {
 		id: number;
 		name?: string;
@@ -30,6 +20,22 @@ declare namespace APISchema {
 		createdAt: string;
 		updatedAt: string;
 		role: string;
+	}
+
+	type Wishlist = {
+		id: number;
+		userId: number;
+		name: string;
+		createdAt: string;
+		updatedAt: string;
+	}
+
+	type WishlistItem = {
+		id: number;
+		wishlistId: number;
+		productId: number;
+		createdAt: string;
+		updatedAt: string;
 	}
 
 

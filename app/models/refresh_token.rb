@@ -1,4 +1,4 @@
-class RefreshToken < ApplicationRecord
+class RefreshToken < ActiveRecord::Base
   TOKEN_BYTES = 32
   EXPIRATION = 30.days
 

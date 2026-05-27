@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_25_060200) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_27_090100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -70,6 +70,28 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_25_060200) do
     t.index ["role"], name: "index_users_on_role"
   end
 
+  create_table "wishlist_items", force: :cascade do |t|
+    t.bigint "wishlist_id", null: false
+    t.bigint "product_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_wishlist_items_on_product_id"
+    t.index ["wishlist_id", "product_id"], name: "index_wishlist_items_on_wishlist_id_and_product_id", unique: true
+    t.index ["wishlist_id"], name: "index_wishlist_items_on_wishlist_id"
+  end
+
+  create_table "wishlists", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", default: "Wishlist", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "name"], name: "index_wishlists_on_user_id_and_name", unique: true
+    t.index ["user_id"], name: "index_wishlists_on_user_id"
+  end
+
   add_foreign_key "allowlisted_jwts", "users", on_delete: :cascade
   add_foreign_key "refresh_tokens", "users", on_delete: :cascade
+  add_foreign_key "wishlist_items", "products", on_delete: :cascade
+  add_foreign_key "wishlist_items", "wishlists", on_delete: :cascade
+  add_foreign_key "wishlists", "users", on_delete: :cascade
 end

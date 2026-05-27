@@ -15,6 +15,8 @@ class Product < ApplicationRecord
     numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :status, inclusion: { in: STATUSES }
 
+  has_many :wishlist_items, dependent: :delete_all
+
   scope :active, -> { where(status: "active") }
 
   private

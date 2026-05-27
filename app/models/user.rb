@@ -11,6 +11,7 @@ class User < ApplicationRecord
 
   has_many :allowlisted_jwts, dependent: :delete_all
   has_many :refresh_tokens, dependent: :delete_all
+  has_many :wishlists, dependent: :delete_all
 
   validates :name, presence: true
   validates :role, inclusion: { in: ROLES }
