@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_27_090100) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_28_090200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,6 +24,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_27_090100) do
     t.index ["jti"], name: "index_allowlisted_jwts_on_jti"
     t.index ["user_id", "jti"], name: "index_allowlisted_jwts_on_user_id_and_jti", unique: true
     t.index ["user_id"], name: "index_allowlisted_jwts_on_user_id"
+  end
+
+  create_table "product_taxons", force: :cascade do |t|
+    t.bigint "product_id", null: false
+    t.bigint "taxon_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id", "taxon_id"], name: "index_product_taxons_on_product_id_and_taxon_id", unique: true
+    t.index ["product_id"], name: "index_product_taxons_on_product_id"
+    t.index ["taxon_id"], name: "index_product_taxons_on_taxon_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -53,6 +63,28 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_27_090100) do
     t.index ["token_digest"], name: "index_refresh_tokens_on_token_digest", unique: true
     t.index ["user_id", "revoked_at"], name: "index_refresh_tokens_on_user_id_and_revoked_at"
     t.index ["user_id"], name: "index_refresh_tokens_on_user_id"
+  end
+
+  create_table "taxonomies", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_taxonomies_on_slug", unique: true
+  end
+
+  create_table "taxons", force: :cascade do |t|
+    t.bigint "taxonomy_id", null: false
+    t.bigint "parent_id"
+    t.string "name", null: false
+    t.string "slug", null: false
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["parent_id"], name: "index_taxons_on_parent_id"
+    t.index ["slug"], name: "index_taxons_on_slug", unique: true
+    t.index ["taxonomy_id", "parent_id", "position"], name: "index_taxons_on_taxonomy_id_and_parent_id_and_position"
+    t.index ["taxonomy_id"], name: "index_taxons_on_taxonomy_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -90,7 +122,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_27_090100) do
   end
 
   add_foreign_key "allowlisted_jwts", "users", on_delete: :cascade
+  add_foreign_key "product_taxons", "products", on_delete: :cascade
+  add_foreign_key "product_taxons", "taxons", on_delete: :cascade
   add_foreign_key "refresh_tokens", "users", on_delete: :cascade
+  add_foreign_key "taxons", "taxonomies", on_delete: :cascade
+  add_foreign_key "taxons", "taxons", column: "parent_id", on_delete: :cascade
   add_foreign_key "wishlist_items", "products", on_delete: :cascade
   add_foreign_key "wishlist_items", "wishlists", on_delete: :cascade
   add_foreign_key "wishlists", "users", on_delete: :cascade

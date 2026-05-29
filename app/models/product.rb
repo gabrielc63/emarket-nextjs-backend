@@ -16,6 +16,8 @@ class Product < ApplicationRecord
   validates :status, inclusion: { in: STATUSES }
 
   has_many :wishlist_items, dependent: :delete_all
+  has_many :product_taxons, dependent: :delete_all
+  has_many :taxons, through: :product_taxons
 
   scope :active, -> { where(status: "active") }
 

@@ -71,3 +71,44 @@ products.each do |attributes|
 end
 
 puts "Seeded #{products.length} products."
+
+categories = Taxonomy.find_or_initialize_by(slug: "categories")
+categories.update!(name: "Categories")
+
+category_taxons = [
+  { name: "Electronics", slug: "electronics", position: 1 },
+  { name: "Audio", slug: "electronics-audio", parent_slug: "electronics", position: 1 },
+  { name: "Smart Home", slug: "electronics-smart-home", parent_slug: "electronics", position: 2 },
+  { name: "Fashion", slug: "fashion", position: 2 },
+  { name: "Footwear", slug: "fashion-footwear", parent_slug: "fashion", position: 1 },
+  { name: "Home", slug: "home", position: 3 },
+  { name: "Kitchen", slug: "home-kitchen", parent_slug: "home", position: 1 },
+  { name: "Office", slug: "home-office", parent_slug: "home", position: 2 }
+]
+
+category_taxons.each do |attributes|
+  taxon = Taxon.find_or_initialize_by(slug: attributes.fetch(:slug))
+  parent = attributes[:parent_slug] ? Taxon.find_by!(slug: attributes.fetch(:parent_slug)) : nil
+  taxon.update!(
+    taxonomy: categories,
+    parent: parent,
+    name: attributes.fetch(:name),
+    position: attributes.fetch(:position)
+  )
+end
+
+product_taxons = {
+  "wireless-headphones" => "electronics-audio",
+  "smart-home-hub" => "electronics-smart-home",
+  "running-shoes" => "fashion-footwear",
+  "ergonomic-office-chair" => "home-office",
+  "stainless-steel-cookware-set" => "home-kitchen"
+}
+
+product_taxons.each do |product_slug, taxon_slug|
+  product = Product.find_by!(slug: product_slug)
+  taxon = Taxon.find_by!(slug: taxon_slug)
+  ProductTaxon.find_or_create_by!(product: product, taxon: taxon)
+end
+
+puts "Seeded #{category_taxons.length} taxons."
