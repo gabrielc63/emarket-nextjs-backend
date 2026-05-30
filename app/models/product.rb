@@ -20,6 +20,11 @@ class Product < ApplicationRecord
   has_many :taxons, through: :product_taxons
 
   scope :active, -> { where(status: "active") }
+  scope :for_taxon_slug, ->(taxon_slug) {
+    taxon_ids = Taxon.self_and_descendant_ids_for_slug(taxon_slug)
+
+    taxon_ids.any? ? joins(:product_taxons).where(product_taxons: { taxon_id: taxon_ids }).distinct : none
+  }
 
   private
 

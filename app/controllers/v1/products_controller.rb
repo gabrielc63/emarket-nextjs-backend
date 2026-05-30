@@ -3,7 +3,9 @@ module V1
     before_action :set_product, only: %i[show]
 
     def index
-      @products = Product.active.order(created_at: :desc)
+      @products = Product.active
+      @products = @products.for_taxon_slug(params[:taxon]) if params[:taxon].present?
+      @products = @products.order(created_at: :desc)
     end
 
     def show

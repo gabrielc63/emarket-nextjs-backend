@@ -18,6 +18,24 @@ class Taxon < ApplicationRecord
 
   scope :roots, -> { where(parent_id: nil).order(position: :asc, name: :asc) }
 
+  def self.self_and_descendant_ids_for_slug(slug)
+    query = sanitize_sql_array([
+      <<~SQL.squish,
+        WITH RECURSIVE taxon_tree AS (
+          SELECT id FROM taxons WHERE slug = ?
+          UNION ALL
+          SELECT taxons.id
+          FROM taxons
+          INNER JOIN taxon_tree ON taxons.parent_id = taxon_tree.id
+        )
+        SELECT id FROM taxon_tree
+      SQL
+      slug
+    ])
+
+    connection.select_values(query).map(&:to_i)
+  end
+
   private
 
   def set_slug
